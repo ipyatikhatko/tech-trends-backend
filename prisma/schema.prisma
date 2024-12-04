@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Technology {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique @db.VarChar(100)
+  djinniKeyword String   @unique @map("djinni_keyword") @db.VarChar(100)
+  jobs          Job[]
+
+  @@map("technologies")
+}
+
+model Job {
+  id              Int         @id @default(autoincrement())
+  jobId           String      @unique @map("job_id")
+  title           String?     @db.Text
+  salary          String?     @db.Text
+  company         String?     @db.Text
+  companyLogo     String?     @map("company_logo") @db.Text
+  workFormat      String?     @map("work_format") @db.Text
+  location        String?     @db.Text
+  description     String?     @db.Text
+  views           Int         @default(0)
+  applications    Int         @default(0)
+  postedAt        DateTime?   @map("posted_at")
+  experienceYears Float?      @map("experience_years")
+  englishLevel    String?     @map("english_level") @db.Text
+  technology      Technology? @relation(fields: [technologyId], references: [id], onDelete: SetNull)
+  technologyId    Int?        @map("technology_id")
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamp()
+
+  @@map("jobs")
+} 
